@@ -7,16 +7,26 @@ Steps for Setting Up the Project Infrastructure
 *******************************************
 1. VPC Creation
 Design and create a Virtual Private Cloud (VPC) to serve as the foundation for the project infrastructure.
+-Rename the subnets
+-create 5 security groups.
+      1)Web ALB- open port 80 anywhere(since people access this load balancer dns to access the we app)
+      2)Web Tier- open http 80 source as Web ALB SG. also add another http 80 rule with source as your CIDR range of your vpc
+      3)App Tier- open tcp 4000 for react js application and source as the CIDR range again
+      4)Internal LB- open http 80 with source as CIDR range
+      5)RDS LB- open mysql 3306 with source as CIDR range
 
 2. S3 Bucket and IAM Role Setup
-Create an S3 bucket and upload the application code.
-Set up an IAM role with the necessary permissions and attach it to the EC2 instance.
+Create an S3 bucket and upload the application code(first clone the repository into your laptop).
+Set up an IAM role with the necessary permissions and attach it to the EC2 instance.(This is used to connect to ec2 that are in private subnet instead of bastion host.You can also connect your ec2 with s3 bucket using this role)
 
 3. Database Configuration
 Launch and configure an RDS instance to serve as the backend database.
+-Configure Subnet Groups(This is done as their is no direct option to configure the subnets in rds service)
+-Then create the MYSQL database(Free tier,select your vpc,select subnet group,block public access)
 
 4. Application Tier Setup
 Deploy application-tier resources, including the configuration of an internal load balancer for traffic distribution within the tier.
+-First launch an amazon-linux-2 ec2 machine in any of the app Subnets and dont forget to assign the IAM Role which we created to this instance as we need to access it via ssm.
 
 5. Web Tier Setup
 Provision web-tier resources and set up an external load balancer to manage incoming traffic from users.
