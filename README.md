@@ -1,48 +1,128 @@
-# Welcome Learners! 👋
+# AWS 3-Tier Architecture Project
 
-**Discover the power of 3-Tier Architecture!**  
-A 3-Tier Architecture app separates the presentation, application, and database layers, enhancing scalability, manageability, and security. This project showcases a robust AWS implementation of the architecture.
+## Author
 
----
-
-## 🚀 **In this Project, I have used the following AWS services:**
-
-- **VPC**  
-- **S3**  
-- **IAM**  
-- **EC2**  
-- **RDS**  
-- **Route 53**
+**Ranshi**
 
 ---
 
-## 🛠️ **Getting Started**
+## 📌 Project Overview
 
-1. **Fork and Clone** the repository to get started.  
-2. ⭐ Star the repository to show your support!
+This project demonstrates the implementation of a **highly available, fault-tolerant AWS 3-Tier Architecture**. The architecture is designed using best practices with clear separation of concerns across **Web**, **Application**, and **Database** tiers.
 
----
-
-## ❤️ **Kind Request**
-
-If you successfully complete the practice:  
-✨ Kindly share your experience and views on LinkedIn. Don't forget to tag me!  
-💡 Your feedback boosts my enthusiasm to create more DevOps and AWS tutorials.
+The project focuses on real-world cloud infrastructure design rather than just application code, making it suitable for learning and hands-on practice with real-world cloud infrastructure.
 
 ---
 
-## 📌 **Connect with Me**  
-- **LinkedIn**: [Kastro Kiran](https://www.linkedin.com/in/kastro-kiran/)  
-- **YouTube**: [Learn With KASTRO](https://www.youtube.com/@LearnWithKASTRO)  
-- **AWS 3-Tier Architecture Project Tutorial**: [Watch Now](https://www.youtube.com/watch?v=Oj-Hr_aulKA)  
-- **WhatsApp Group**: [Join Now for Updates and Discussions](https://chat.whatsapp.com/EGw6ZlwUHZc82cA0vXFnwm)
+## 🏗️ Architecture Breakdown
+
+### 1️⃣ Web Tier (Presentation Layer)
+
+* Hosted on **EC2 instances** in **public subnets**
+* Uses **Nginx** to serve frontend content
+* Fronted by an **External Application Load Balancer (ALB)**
+* Accessible over **HTTP/HTTPS**
+
+### 2️⃣ Application Tier (Business Logic Layer)
+
+* **Python-based backend application**
+* Runs on **EC2 instances in private subnets**
+* Managed behind an **Internal Application Load Balancer**
+* Uses **PM2 / process management** only for service control (not Node.js app)
+
+### 3️⃣ Database Tier (Data Layer)
+
+* **Amazon RDS (MySQL)**
+* Deployed in **private subnets**
+* Public access disabled
+* Access restricted via **Security Groups**
 
 ---
 
-## 🎥 **DevOps Projects You Might Love**
-- **Swiggy App**: [Watch Now](https://youtu.be/x55z7rk0NAU)  
-- **Zomato App**: [Watch Now](https://youtu.be/GyoI6-I68aQ)  
+## ☁️ AWS Services Used
+
+* Amazon VPC
+* Public & Private Subnets
+* Internet Gateway & NAT Gateway
+* EC2
+* Application Load Balancers (External & Internal)
+* Auto Scaling Groups
+* Amazon RDS (MySQL)
+* Amazon S3
+* IAM Roles
+* AWS Systems Manager (SSM)
+* Route 53
+* AWS Certificate Manager (ACM)
 
 ---
 
-🎉 **Happy Learning!**
+## 🔐 Security Design
+
+* Separate security groups for each tier
+* No public access to App or DB tier
+* Internal ALB for backend traffic
+* IAM Role used instead of Bastion Host
+* Database credentials used only for internal connectivity
+
+---
+
+## ⚙️ Application Flow
+
+1. User accesses the application via **Domain / ALB DNS**
+2. Traffic hits **External ALB**
+3. Requests are forwarded to **Web Tier**
+4. Web Tier proxies API calls to **Internal ALB**
+5. Internal ALB routes traffic to **App Tier**
+6. App Tier communicates securely with **RDS MySQL**
+
+---
+
+## 📦 S3 Usage
+
+* Stores application artifacts and configuration files
+* Web tier and app tier instances pull code from S3
+* Simplifies deployment and updates
+
+---
+
+## 🧪 Health Checks
+
+* Application exposes a health endpoint
+* Load balancers use health checks for traffic routing
+* Ensures high availability and fault tolerance
+
+---
+
+## 🧹 Cleanup Strategy
+
+To avoid unnecessary AWS charges, resources are deleted in the following order:
+
+1. Auto Scaling Groups
+2. Load Balancers
+3. Target Groups
+4. AMIs & Snapshots
+5. RDS Instance
+6. S3 Bucket
+7. ACM Certificate
+8. Route 53 Records
+9. NAT Gateway & Elastic IP
+10. VPC
+
+---
+
+## 🎯 Key Takeaways
+
+* Real-world AWS architecture implementation
+* Strong focus on security and scalability
+* Clear separation of infrastructure layers
+
+---
+
+## 📌 Notes
+
+* This project is for **learning and demonstration purposes**
+* Secrets should be managed using **AWS Secrets Manager or SSM Parameter Store** in production
+
+---
+
+⭐ If you find this project useful, feel free to star the repository and use it as a reference for your AWS learning journey.
